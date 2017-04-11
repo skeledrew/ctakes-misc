@@ -9,8 +9,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.ctakes.assertion.medfacts.cleartk.PolarityCleartkAnalysisEngine;
-import org.apache.ctakes.assertion.medfacts.cleartk.UncertaintyCleartkAnalysisEngine;
 import org.apache.ctakes.chunker.ae.Chunker;
 import org.apache.ctakes.chunker.ae.DefaultChunkCreator;
 import org.apache.ctakes.chunker.ae.adjuster.ChunkAdjuster;
@@ -54,7 +52,7 @@ import com.google.common.io.CharStreams;
 
 public class BasicAnnotations {
 
-  public static File inputDirectory = new File("/Users/Dima/Loyola/Data/Thyme/Text/train/");
+  public static File inputDirectory = new File("/Users/Dima/Data/");
   public static String outputDirectory = "/Users/Dima/Temp/";
 
   public static void main(String[] args) throws Exception {
@@ -103,6 +101,43 @@ public class BasicAnnotations {
         Chunker.CHUNKER_CREATOR_CLASS_PARAM,
         DefaultChunkCreator.class));
     
+    // identify UMLS named entities
+
+    // adjust NP in NP NP to span both
+    aggregateBuilder.add( AnalysisEngineFactory.createEngineDescription(
+        ChunkAdjuster.class,
+        ChunkAdjuster.PARAM_CHUNK_PATTERN,
+        new String[] { "NP", "NP" },
+        ChunkAdjuster.PARAM_EXTEND_TO_INCLUDE_TOKEN,
+        1 ) );
+    // adjust NP in NP PP NP to span all three
+    aggregateBuilder.add( AnalysisEngineFactory.createEngineDescription(
+        ChunkAdjuster.class,
+        ChunkAdjuster.PARAM_CHUNK_PATTERN,
+        new String[] { "NP", "PP", "NP" },
+        ChunkAdjuster.PARAM_EXTEND_TO_INCLUDE_TOKEN,
+        2 ) );
+    // add lookup windows for each NP
+    aggregateBuilder
+    .add( AnalysisEngineFactory.createEngineDescription( CopyNPChunksToLookupWindowAnnotations.class ) );
+    // maximize lookup windows
+    aggregateBuilder.add( AnalysisEngineFactory.createEngineDescription(
+        OverlapAnnotator.class,
+        "A_ObjectClass",
+        LookupWindowAnnotation.class,
+        "B_ObjectClass",
+        LookupWindowAnnotation.class,
+        "OverlapType",
+        "A_ENV_B",
+        "ActionType",
+        "DELETE",
+        "DeleteAction",
+        new String[] { "selector=B" } ) );
+    // add UMLS on top of lookup windows
+    aggregateBuilder.add( DefaultJCasTermAnnotator.createAnnotatorDescription() );
+
+    aggregateBuilder.add( LvgAnnotator.createAnnotatorDescription() );
+  
     // write out the CAS after all the above annotations
     aggregateBuilder.add(AnalysisEngineFactory.createEngineDescription(
         XMIWriter.class,
