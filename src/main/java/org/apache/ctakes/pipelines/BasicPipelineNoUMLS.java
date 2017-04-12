@@ -11,15 +11,11 @@ import java.util.List;
 
 import org.apache.ctakes.chunker.ae.Chunker;
 import org.apache.ctakes.chunker.ae.DefaultChunkCreator;
-import org.apache.ctakes.chunker.ae.adjuster.ChunkAdjuster;
 import org.apache.ctakes.contexttokenizer.ae.ContextDependentTokenizerAnnotator;
-import org.apache.ctakes.core.ae.OverlapAnnotator;
 import org.apache.ctakes.core.ae.SentenceDetector;
 import org.apache.ctakes.core.ae.SimpleSegmentAnnotator;
 import org.apache.ctakes.core.ae.TokenizerAnnotatorPTB;
 import org.apache.ctakes.core.resource.FileLocator;
-import org.apache.ctakes.dictionary.lookup2.ae.DefaultJCasTermAnnotator;
-import org.apache.ctakes.lvg.ae.LvgAnnotator;
 import org.apache.ctakes.postagger.POSTagger;
 import org.apache.ctakes.typesystem.type.syntax.BaseToken;
 import org.apache.ctakes.typesystem.type.syntax.Chunk;
@@ -50,9 +46,9 @@ import org.xml.sax.SAXException;
 
 import com.google.common.io.CharStreams;
 
-public class BasicAnnotations {
+public class BasicPipelineNoUMLS {
 
-  public static File inputDirectory = new File("/Users/Dima/Loyola/Workspaces/cTakes/ctakes/ctakes-examples-res/src/main/resources/org/apache/ctakes/examples/notes/rtf/");
+  public static File inputDirectory = new File("/Users/Dima/Loyola/Workspaces/cTakes/ctakes/ctakes-examples-res/src/main/resources/org/apache/ctakes/examples/notes/");
   public static String outputDirectory = "/Users/Dima/Temp/";
 
   public static void main(String[] args) throws Exception {
@@ -100,43 +96,6 @@ public class BasicAnnotations {
         FileLocator.locateFile("org/apache/ctakes/chunker/models/chunker-model.zip"),
         Chunker.CHUNKER_CREATOR_CLASS_PARAM,
         DefaultChunkCreator.class));
-    
-    // identify UMLS named entities
-
-    // adjust NP in NP NP to span both
-    aggregateBuilder.add( AnalysisEngineFactory.createEngineDescription(
-        ChunkAdjuster.class,
-        ChunkAdjuster.PARAM_CHUNK_PATTERN,
-        new String[] { "NP", "NP" },
-        ChunkAdjuster.PARAM_EXTEND_TO_INCLUDE_TOKEN,
-        1 ) );
-    // adjust NP in NP PP NP to span all three
-    aggregateBuilder.add( AnalysisEngineFactory.createEngineDescription(
-        ChunkAdjuster.class,
-        ChunkAdjuster.PARAM_CHUNK_PATTERN,
-        new String[] { "NP", "PP", "NP" },
-        ChunkAdjuster.PARAM_EXTEND_TO_INCLUDE_TOKEN,
-        2 ) );
-    // add lookup windows for each NP
-    aggregateBuilder
-    .add( AnalysisEngineFactory.createEngineDescription( CopyNPChunksToLookupWindowAnnotations.class ) );
-    // maximize lookup windows
-    aggregateBuilder.add( AnalysisEngineFactory.createEngineDescription(
-        OverlapAnnotator.class,
-        "A_ObjectClass",
-        LookupWindowAnnotation.class,
-        "B_ObjectClass",
-        LookupWindowAnnotation.class,
-        "OverlapType",
-        "A_ENV_B",
-        "ActionType",
-        "DELETE",
-        "DeleteAction",
-        new String[] { "selector=B" } ) );
-    // add UMLS on top of lookup windows
-    aggregateBuilder.add( DefaultJCasTermAnnotator.createAnnotatorDescription() );
-
-    aggregateBuilder.add( LvgAnnotator.createAnnotatorDescription() );
   
     // write out the CAS after all the above annotations
     aggregateBuilder.add(AnalysisEngineFactory.createEngineDescription(
