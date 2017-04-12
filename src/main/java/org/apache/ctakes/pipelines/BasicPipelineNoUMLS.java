@@ -48,7 +48,7 @@ import com.google.common.io.CharStreams;
 
 public class BasicPipelineNoUMLS {
 
-  public static File inputDirectory = new File("/Users/Dima/Loyola/Workspaces/cTakes/ctakes/ctakes-examples-res/src/main/resources/org/apache/ctakes/examples/notes/");
+  public static File inputDirectory = new File("/Users/Dima/Loyola/Workspaces/cTakes/ctakes/ctakes-examples-res/src/main/resources/org/apache/ctakes/examples/notes/rtf/");
   public static String outputDirectory = "/Users/Dima/Temp/";
 
   public static void main(String[] args) throws Exception {
