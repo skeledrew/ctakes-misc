@@ -49,14 +49,29 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 import com.google.common.io.CharStreams;
+import com.lexicalscope.jewel.cli.CliFactory;
+import com.lexicalscope.jewel.cli.Option;
 
 public class UmlsLookupPipeline {
 
-  public static File inputDirectory = new File("/Users/Dima/Loyola/Workspaces/cTakes/ctakes/ctakes-examples-res/src/main/resources/org/apache/ctakes/examples/notes/rtf/");
-  public static String outputDirectory = "/Users/Dima/Temp/";
+  static interface Options {
+
+    @Option(longName = "input-dir")
+    public File getInputDirectory();
+
+    @Option(longName = "output-dir")
+    public File getOutputDirectory();
+  }
+  
+  public static File inputDirectory;  // text files to process
+  public static File outputDirectory; // directory to output xmi files
 
   public static void main(String[] args) throws Exception {
 
+    Options options = CliFactory.parseArguments(Options.class, args);
+    inputDirectory = options.getInputDirectory();
+    outputDirectory = options.getOutputDirectory();
+    
     List<File> files = new ArrayList<File>();
     for(File file : inputDirectory.listFiles()) {
       files.add(file);
