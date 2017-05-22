@@ -9,6 +9,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.ctakes.assertion.medfacts.cleartk.PolarityCleartkAnalysisEngine;
+import org.apache.ctakes.assertion.medfacts.cleartk.UncertaintyCleartkAnalysisEngine;
 import org.apache.ctakes.chunker.ae.Chunker;
 import org.apache.ctakes.chunker.ae.DefaultChunkCreator;
 import org.apache.ctakes.chunker.ae.adjuster.ChunkAdjuster;
@@ -153,6 +155,9 @@ public class UmlsLookupPipeline {
 
     aggregateBuilder.add( LvgAnnotator.createAnnotatorDescription() );
   
+    aggregateBuilder.add(PolarityCleartkAnalysisEngine.createAnnotatorDescription());
+    aggregateBuilder.add(UncertaintyCleartkAnalysisEngine.createAnnotatorDescription());
+    
     // write out the CAS after all the above annotations
     aggregateBuilder.add(AnalysisEngineFactory.createEngineDescription(
         XMIWriter.class,
