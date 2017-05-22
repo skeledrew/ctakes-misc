@@ -111,12 +111,21 @@ public class UmlsLookupPipeline {
         "org/apache/ctakes/postagger/models/mayo-pos.zip"));
 
     // identify chunks
-    aggregateBuilder.add(AnalysisEngineFactory.createEngineDescription(
+//    aggregateBuilder.add(AnalysisEngineFactory.createEngineDescription(
+//        Chunker.class,
+//        Chunker.CHUNKER_MODEL_FILE_PARAM,
+//        FileLocator.locateFile("/Users/Dima/Loyola/Workspaces/cTakes/ctakes/ctakes-chunker-res/src/main/resources/org/apache/ctakes/chunker/models/chunker-model.zip"),
+//        Chunker.CHUNKER_CREATOR_CLASS_PARAM,
+//        DefaultChunkCreator.class));
+
+    
+    aggregateBuilder.add( AnalysisEngineFactory.createEngineDescription(
         Chunker.class,
         Chunker.CHUNKER_MODEL_FILE_PARAM,
-        FileLocator.locateFile("/Users/Dima/Loyola/Workspaces/cTakes/ctakes/ctakes-chunker-res/src/main/resources/org/apache/ctakes/chunker/models/chunker-model.zip"),
+        FileLocator.locateFile( "org/apache/ctakes/chunker/models/chunker-model.zip" ),
         Chunker.CHUNKER_CREATOR_CLASS_PARAM,
-        DefaultChunkCreator.class));
+        DefaultChunkCreator.class ) );    
+    
     
     // identify UMLS named entities
 
