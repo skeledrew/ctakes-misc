@@ -64,7 +64,7 @@ public class UmlsLookupPipeline {
     @Option(longName = "output-dir")
     public File getOutputDirectory();
   }
-  
+
   public static File inputDirectory;  // text files to process
   public static File outputDirectory; // directory to output xmi files
 
@@ -73,7 +73,7 @@ public class UmlsLookupPipeline {
     Options options = CliFactory.parseArguments(Options.class, args);
     inputDirectory = options.getInputDirectory();
     outputDirectory = options.getOutputDirectory();
-    
+
     List<File> files = new ArrayList<File>();
     for(File file : inputDirectory.listFiles()) {
       files.add(file);
@@ -110,23 +110,17 @@ public class UmlsLookupPipeline {
         POSTagger.POS_MODEL_FILE_PARAM,
         "org/apache/ctakes/postagger/models/mayo-pos.zip"));
 
-    // identify chunks
-//    aggregateBuilder.add(AnalysisEngineFactory.createEngineDescription(
-//        Chunker.class,
-//        Chunker.CHUNKER_MODEL_FILE_PARAM,
-//        FileLocator.locateFile("/Users/Dima/Loyola/Workspaces/cTakes/ctakes/ctakes-chunker-res/src/main/resources/org/apache/ctakes/chunker/models/chunker-model.zip"),
-//        Chunker.CHUNKER_CREATOR_CLASS_PARAM,
-//        DefaultChunkCreator.class));
-
-    
+    // originally we had FileLocator.locateFile( "org/apache/ctakes/chunker/models/chunker-model.zip" )
+    // but this failed to locate the chunker model, so using the absolute path
+    String absolutePathToChunkerModel = System.getenv("CTAKES_HOME") + 
+        "ctakes-chunker-res/src/main/resources/org/apache/ctakes/chunker/models/chunker-model.zip";
     aggregateBuilder.add( AnalysisEngineFactory.createEngineDescription(
         Chunker.class,
         Chunker.CHUNKER_MODEL_FILE_PARAM,
-        FileLocator.locateFile( "org/apache/ctakes/chunker/models/chunker-model.zip" ),
+        FileLocator.locateFile(absolutePathToChunkerModel),
         Chunker.CHUNKER_CREATOR_CLASS_PARAM,
         DefaultChunkCreator.class ) );    
-    
-    
+
     // identify UMLS named entities
 
     // adjust NP in NP NP to span both
@@ -163,10 +157,10 @@ public class UmlsLookupPipeline {
     aggregateBuilder.add( DefaultJCasTermAnnotator.createAnnotatorDescription() );
 
     aggregateBuilder.add( LvgAnnotator.createAnnotatorDescription() );
-  
+
     aggregateBuilder.add(PolarityCleartkAnalysisEngine.createAnnotatorDescription());
     aggregateBuilder.add(UncertaintyCleartkAnalysisEngine.createAnnotatorDescription());
-    
+
     // write out the CAS after all the above annotations
     aggregateBuilder.add(AnalysisEngineFactory.createEngineDescription(
         XMIWriter.class,
@@ -175,7 +169,7 @@ public class UmlsLookupPipeline {
 
     return aggregateBuilder;
   }
-  
+
   /* 
    * The following class overrides a ClearTK utility annotator class for reading
    * a text file into a JCas. The code is copy/pasted so that one tiny modification
@@ -200,7 +194,7 @@ public class UmlsLookupPipeline {
       }
     }  
   }
-  
+
   public static class CopyNPChunksToLookupWindowAnnotations extends JCasAnnotator_ImplBase {
 
     @Override
@@ -212,7 +206,7 @@ public class UmlsLookupPipeline {
       }
     }
   }
-  
+
   public static class XMIWriter extends JCasAnnotator_ImplBase {
 
     public static final String PARAM_XMI_DIRECTORY = "XMIDirectory";
@@ -251,7 +245,7 @@ public class UmlsLookupPipeline {
   static File getXMIFile(File xmiDirectory, JCas jCas) throws AnalysisEngineProcessException {
     return getXMIFile(xmiDirectory, new File(ViewUriUtil.getURI(jCas).getPath()));
   }
-  
+
   static File getXMIFile(File xmiDirectory, File textFile) {
     return new File(xmiDirectory, textFile.getName() + ".xmi");
   }
