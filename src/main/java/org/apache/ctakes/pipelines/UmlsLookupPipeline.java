@@ -158,8 +158,8 @@ public class UmlsLookupPipeline {
 
     aggregateBuilder.add( LvgAnnotator.createAnnotatorDescription() );
 
-    aggregateBuilder.add(PolarityCleartkAnalysisEngine.createAnnotatorDescription());
-    aggregateBuilder.add(UncertaintyCleartkAnalysisEngine.createAnnotatorDescription());
+//    aggregateBuilder.add( PolarityCleartkAnalysisEngine.createAnnotatorDescription() );
+//    aggregateBuilder.add( UncertaintyCleartkAnalysisEngine.createAnnotatorDescription() );
 
     // write out the CAS after all the above annotations
     aggregateBuilder.add(AnalysisEngineFactory.createEngineDescription(
