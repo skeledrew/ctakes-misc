@@ -46,11 +46,11 @@ public class Utils {
     }
 
     String[] paths = new String[fileNames.size()];
-    fileNames.toArray(paths);
+    String[] fNArr = fileNames.toArray(paths);
 
     return CollectionReaderFactory.createReader(
         XMIReader.class,
         XMIReader.PARAM_FILES,
-        paths);
+        fNArr);
   }
 }
