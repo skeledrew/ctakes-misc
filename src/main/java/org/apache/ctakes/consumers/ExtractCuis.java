@@ -109,11 +109,7 @@ public class ExtractCuis {
         for(String code : getOntologyConceptCodes(eventMention)) {
           String output = String.format("%s|%s|%s\n", code, text, semanticType);
           //String output = String.format("%s", code);
-          if(polarity > 0) {
-            cuis.add(output);
-          } else {
-            cuis.add("-" + output);
-          }
+          cuis.add(output);
         }
       }
 
@@ -124,11 +120,7 @@ public class ExtractCuis {
         for(String code : getOntologyConceptCodes(entityMention)) {
           String output = String.format("%s|%s|%s\n", code, text, semanticType);
           //String output = String.format("%s", code);
-          if(polarity > 0) {
-            cuis.add(output);
-          } else {
-            cuis.add("-" + output);
-          }
+          cuis.add(output);
         }
       }
 
