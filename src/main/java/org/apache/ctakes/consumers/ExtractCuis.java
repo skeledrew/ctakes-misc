@@ -107,8 +107,8 @@ public class ExtractCuis {
         String semanticType = eventMention.getClass().getSimpleName();
         int polarity = eventMention.getPolarity();
         for(String code : getOntologyConceptCodes(eventMention)) {
-          // String output = String.format("%s|%s|%s", code, text, semanticType);
-          String output = String.format("%s", code);
+          String output = String.format("%s|%s|%s\n", code, text, semanticType);
+          //String output = String.format("%s", code);
           if(polarity > 0) {
             cuis.add(output);
           } else {
@@ -122,8 +122,8 @@ public class ExtractCuis {
         String semanticType = entityMention.getClass().getSimpleName();
         int polarity = entityMention.getPolarity();
         for(String code : getOntologyConceptCodes(entityMention)) {
-          // String output = String.format("%s|%s|%s", code, text, semanticType);
-          String output = String.format("%s", code);
+          String output = String.format("%s|%s|%s\n", code, text, semanticType);
+          //String output = String.format("%s", code);
           if(polarity > 0) {
             cuis.add(output);
           } else {
